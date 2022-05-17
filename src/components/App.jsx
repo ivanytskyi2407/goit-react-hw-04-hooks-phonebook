@@ -12,39 +12,41 @@ export const App = () => {
     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
   ]);
-  // const [filter, usetFilter] = useState('');
+  const [filter, setFilter] = useState('');
+  const changeFilter = e => {
+    const { name, value } = e.currentTarget;
+    setFilter({ [name]: value });
+  };
 
-  useEffect(() => {
-    const contacts = localStorage.getItem('contacts');
-    const parseContacts = JSON.parse(contacts);
-    if (parseContacts) {
-      this.setState({ contacts: parseContacts });
-    }
-  }, []);
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   const contacts = localStorage.getItem('contacts');
+  //   const parseContacts = JSON.parse(contacts);
+  //   if (parseContacts) {
+  //     setContacts({ contacts: parseContacts });
+  //   }
+  // }, []);
+  // useEffect(() => {
+  //   localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
-  const addContact = ({ name, number }) => {
+  const addContact = (name, number) => {
     const noUniqueName = contacts
       .map(e => e.name.toLowerCase())
       .includes(name.toLowerCase());
     if (noUniqueName) {
       return alert(`${name} is already in contacts`);
+    } else {
+      const contact = {
+        id: nanoid(),
+        name: name,
+        number: number,
+      };
+      setContacts(prevState => {
+        return [...prevState, contact];
+      });
     }
-    const contact = {
-      id: nanoid(),
-      name: name,
-      number: number,
-    };
-    setContacts(prevState => {
-      return [...prevState, contact];
-    });
   };
 
-  //   changeFilter = e => {
-  //     this.setState({ filter: e.currentTarget.value });
-  //   };
   //   filterContacts = () => {
   //     const normalizedFilter = this.state.filter.toLowerCase();
   //     const filter = this.state.contacts.filter(contact =>
@@ -64,9 +66,9 @@ export const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Phonebook onSubmit={addContact} />
-      {/* <Filter value={filter} onChange={changeFilter} />
+      <Filter value={filter} onChange={changeFilter} />
       <h2>Contacts</h2>
-      <Contacts contacts={filterContacts()} onRemoveContact={removeContact} /> */}
+      {/* <Contacts contacts={filterContacts()} onRemoveContact={removeContact} /> */}
     </div>
   );
 };
