@@ -1,5 +1,5 @@
 // import { Component } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import Phonebook from './Phonebook/Phonebook';
 import Contacts from './Phonebook/Contacts/Contacts';
@@ -14,34 +14,9 @@ export const App = () => {
   ]);
   const [filter, setFilter] = useState('');
 
-  // const changeFilter = e => {
-  //   const { name, value } = e.currentTarget;
-  //   setFilter({ [name]: value });
-  // };
-  const filterContacts = () => {
-    const normalizedFilter = filter.toLowerCase();
-    return contacts.filter(({ name }) =>
-      name.toLowerCase().includes(normalizedFilter)
-    );
-  };
-
-  const removeContact = contactId => {
-    setContacts(prevState => {
-      console.log(prevState);
-      return [...prevState].filter(({ id }) => id !== contactId);
-    });
-  };
-
-  // useEffect(() => {
-  //   const contacts = localStorage.getItem('contacts');
-  //   const parseContacts = JSON.parse(contacts);
-  //   if (parseContacts) {
-  //     setContacts({ contacts: parseContacts });
-  //   }
-  // }, []);
-  // useEffect(() => {
-  //   localStorage.setItem('contacts', JSON.stringify(contacts));
-  // }, [contacts]);
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   const addContact = (name, number) => {
     const noUniqueName = contacts
@@ -61,13 +36,28 @@ export const App = () => {
     }
   };
 
+  const changeFilter = e => {
+    setFilter(e.currentTarget.value);
+  };
+
+  const filterContacts = () => {
+    return contacts.filter(({ name }) =>
+      name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
+  const removeContact = contactId => {
+    setContacts(prevState => {
+      return [...prevState].filter(({ id }) => id !== contactId);
+    });
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Phonebook onSubmit={addContact} />
       <Filter value={filter} onChange={changeFilter} />
       <h2>Contacts</h2>
-      {/* <Contacts contacts={filterContacts()} onRemoveContact={removeContact} /> */}
       <Contacts
         contacts={filterContacts()}
         filter={filter}
