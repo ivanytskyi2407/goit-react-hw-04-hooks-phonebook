@@ -1,9 +1,9 @@
 // import { Component } from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import Phonebook from './Phonebook/Phonebook';
-// import Contacts from './Phonebook/Contacts/Contacts';
-// import Filter from './Phonebook/Filter/Filter';
+import Contacts from './Phonebook/Contacts/Contacts';
+import Filter from './Phonebook/Filter/Filter';
 
 export const App = () => {
   const [contacts, setContacts] = useState([
@@ -13,9 +13,23 @@ export const App = () => {
     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
   ]);
   const [filter, setFilter] = useState('');
-  const changeFilter = e => {
-    const { name, value } = e.currentTarget;
-    setFilter({ [name]: value });
+
+  // const changeFilter = e => {
+  //   const { name, value } = e.currentTarget;
+  //   setFilter({ [name]: value });
+  // };
+  const filterContacts = () => {
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(({ name }) =>
+      name.toLowerCase().includes(normalizedFilter)
+    );
+  };
+
+  const removeContact = contactId => {
+    setContacts(prevState => {
+      console.log(prevState);
+      return [...prevState].filter(({ id }) => id !== contactId);
+    });
   };
 
   // useEffect(() => {
@@ -47,21 +61,6 @@ export const App = () => {
     }
   };
 
-  //   filterContacts = () => {
-  //     const normalizedFilter = this.state.filter.toLowerCase();
-  //     const filter = this.state.contacts.filter(contact =>
-  //       contact.name.toLowerCase().includes(normalizedFilter)
-  //     );
-  //     return filter;
-  //   };
-  //   removeContact = contactId => {
-  //     this.setState(prevState => {
-  //       return {
-  //         contacts: prevState.contacts.filter(({ id }) => id !== contactId),
-  //       };
-  //     });
-  //   };
-
   return (
     <div>
       <h2>Phonebook</h2>
@@ -69,6 +68,11 @@ export const App = () => {
       <Filter value={filter} onChange={changeFilter} />
       <h2>Contacts</h2>
       {/* <Contacts contacts={filterContacts()} onRemoveContact={removeContact} /> */}
+      <Contacts
+        contacts={filterContacts()}
+        filter={filter}
+        onRemoveContact={removeContact}
+      />
     </div>
   );
 };
